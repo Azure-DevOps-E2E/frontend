@@ -1,4 +1,4 @@
-FROM node:24-alpine3.22 AS build
+FROM node:24.18.0-alpine3.24 AS build
 
 WORKDIR /app
 COPY package.json package-lock.json ./
@@ -8,9 +8,12 @@ COPY . .
 RUN npm run test:run \
     && npm run build
 
-FROM nginx:1.28-alpine3.21
+FROM nginx:1.30.4-alpine3.24
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+ENV APP_VERSION=1.0.0
+ENV NGINX_ENVSUBST_FILTER=APP_VERSION
+
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80

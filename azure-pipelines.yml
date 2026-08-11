@@ -1,0 +1,29 @@
+trigger:
+  branches:
+    include:
+      - '*'
+
+pr:
+  branches:
+    include:
+      - '*'
+
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      endpoint: github-azure-devops-e2e
+      name: Azure-DevOps-E2E/platform
+      ref: refs/heads/main
+
+extends:
+  template: pipelines/templates/service-pipeline.yml@templates
+  parameters:
+    serviceName: frontend
+    imageRepository: frontend
+    dockerfilePath: Dockerfile
+    testCommand: |
+      npm ci
+      npm run typecheck
+      npm run test:run
+      npm run build

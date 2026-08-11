@@ -111,13 +111,13 @@ function App() {
   return (
     <div className="app-shell">
       <header className="topbar">
-        <a className="brand" href="#top" aria-label="Polyglot Mini Shop home">
+        <a className="brand" href="#top" aria-label="NexusCart home">
           <span className="brand-mark" aria-hidden="true">
-            P
+            N
           </span>
           <span>
-            <strong>Polyglot</strong>
-            <small>MINI SHOP</small>
+            <strong>NexusCart</strong>
+            <small>CONNECTED SHOP</small>
           </span>
         </a>
         <div className="service-status" aria-label="System status">
@@ -143,8 +143,8 @@ function App() {
           <div className="hero-aside" aria-hidden="true">
             <div className="orbit orbit-one" />
             <div className="orbit orbit-two" />
-            <div className="hero-monogram">P</div>
-            <span>01 — POLYGLOT EDIT</span>
+            <div className="hero-monogram">N</div>
+            <span>01 — NEXUSCART EDIT</span>
           </div>
         </section>
 
@@ -364,7 +364,7 @@ function App() {
       </main>
 
       <footer>
-        <span>POLYGLOT MINI SHOP © 2026</span>
+        <span>NEXUSCART © 2026</span>
         <span>REACT · GO · PYTHON · JAVA</span>
       </footer>
     </div>

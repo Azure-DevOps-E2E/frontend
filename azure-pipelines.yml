@@ -10,14 +10,14 @@ pr:
 
 resources:
   repositories:
-    - repository: templates
+    - repository: devops
       type: github
       endpoint: github-azure-devops-e2e
-      name: Azure-DevOps-E2E/platform
+      name: Azure-DevOps-E2E/devops
       ref: refs/heads/main
 
 extends:
-  template: pipelines/templates/service-pipeline.yml@templates
+  template: pipelines/templates/service-pipeline.yml@devops
   parameters:
     serviceName: frontend
     imageRepository: frontend

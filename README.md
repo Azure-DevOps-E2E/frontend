@@ -1,6 +1,7 @@
 # Frontend
 
-React + TypeScript storefront. Browser requests use the relative prefix `/api/v1`; in production NGINX Gateway routes them to the backend services.
+React + TypeScript storefront. Browser requests use the relative prefix
+`/api/v1`; the `api-gateway` service routes them to the backend services.
 
 ## Local development
 

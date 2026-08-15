@@ -130,16 +130,14 @@ embedded in the browser bundle.
 
 ## 🔁 CI/CD
 
-`azure-pipelines.yml` owns this repository's variables and composes the local
-`pipelines/stages/ci.yml`, `deploy-dev.yml`, and `deploy-prod.yml` stage
-templates. It extends only the minimal shared contract at
-`Azure-DevOps-E2E/devops/pipelines/templates/pipeline-contract.yml`.
+`azure-pipelines.yml` is a small entry point that composes reusable checkout,
+Node setup, install, Vitest, report, and Qodana step templates from
+`config-management`. Shared stage and job templates own the orchestration.
 
-- Every branch installs dependencies, type-checks, tests, builds, creates the
+- Every branch publishes JUnit and coverage reports, runs Qodana, builds the
   container image, and scans it with Trivy.
-- `main` publishes the immutable `$(Build.BuildId)` image to Azure Container
-  Registry, deploys DEV with Helm, verifies the system, waits for production
-  approval, and then deploys PROD.
+- `main` pushes the `$(Build.BuildId)` and `latest` tags to Azure Container
+  Registry.
 
 ## 📁 Repository Structure
 
@@ -151,10 +149,6 @@ frontend/
 │   ├── App.test.tsx        # UI integration tests
 │   ├── styles.css          # Application styling
 │   └── types.ts            # Shared frontend models
-├── pipelines/stages/
-│   ├── ci.yml              # Test, build, scan, and ACR push
-│   ├── deploy-dev.yml      # DEV deploy and verification
-│   └── deploy-prod.yml     # Approval, PROD deploy, and verification
 ├── azure-pipelines.yml     # Pipeline entry point
 ├── Dockerfile              # Vite build and NGINX runtime
 ├── nginx.conf              # SPA and health endpoint configuration

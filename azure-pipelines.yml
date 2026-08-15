@@ -27,15 +27,17 @@ stages:
     dockerfilePath: Dockerfile
     containerRegistry: acrLoginServer
     qualitySteps:
-    - task: NodeTool@0
-      displayName: 'Use Node.js 24'
-      inputs:
-        versionSpec: '24.x'
-
-    - bash: |
-        set -euo pipefail
-        npm ci
-        npm run typecheck
-        npm run test:run
-        npm run build
-      displayName: 'Type-check, test, and build'
+    - template: pipelines/templates/steps/checkout.yml@configTemplates
+    - template: pipelines/templates/steps/node/setup.yml@configTemplates
+    - template: pipelines/templates/steps/node/install.yml@configTemplates
+    - template: pipelines/templates/steps/node/vitest.yml@configTemplates
+    - template: pipelines/templates/steps/node/run-scripts.yml@configTemplates
+      parameters:
+        scripts:
+        - typecheck
+        - build
+    - template: pipelines/templates/steps/reports.yml@configTemplates
+    - template: pipelines/templates/steps/qodana.yml@configTemplates
+      parameters:
+        linter: qodana-js
+        requiresToken: true

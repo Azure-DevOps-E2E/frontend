@@ -70,14 +70,14 @@ extends:
           inputs:
             versionSpec: '$(nodeVersion)'
 
-        - template: pipelines/templates/steps/node/install.yml@templates
+        - template: steps/node/install.yml@templates
 
-        - template: pipelines/templates/steps/node/vitest.yml@templates
+        - template: steps/node/vitest.yml@templates
           parameters:
             testResultsFile: reports/test-results.xml
             coverageDirectory: coverage
 
-        - template: pipelines/templates/steps/node/run-scripts.yml@templates
+        - template: steps/node/run-scripts.yml@templates
           parameters:
             scripts:
             - typecheck
@@ -129,7 +129,7 @@ extends:
               $(candidateTag)
               dev
 
-        - template: pipelines/templates/steps/container/scan.yml@templates
+        - template: steps/container/scan.yml@templates
           parameters:
             scanImage: '$(acrLoginServer)/$(imageRepository):$(candidateTag)'
             trivyVersion: '$(trivyVersion)'
@@ -233,7 +233,7 @@ extends:
           persistCredentials: true
           displayName: 'Checkout full Git history'
 
-        - template: pipelines/templates/steps/container/resolve-candidate.yml@templates
+        - template: steps/container/resolve-candidate.yml@templates
 
     - stage: PromoteImage
       displayName: 'Promote image - $(serviceName)'
@@ -254,7 +254,7 @@ extends:
             command: login
             containerRegistry: '$(containerRegistryServiceConnection)'
 
-        - template: pipelines/templates/steps/container/promote.yml@templates
+        - template: steps/container/promote.yml@templates
           parameters:
             registry: '$(acrLoginServer)'
             repository: '$(imageRepository)'

@@ -67,7 +67,7 @@ extends:
           parameters:
             cacheKey: '$(serviceName)-node$(nodeVersion)'
             testResultsFile: reports/test-results.xml
-            coverageFile: coverage/lcov.info
+            coverageDirectory: coverage
             condition: and(succeeded(), eq(variables['detect.skipHeavyCI'], 'false'))
 
         - task: PublishTestResults@2

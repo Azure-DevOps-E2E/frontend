@@ -142,7 +142,7 @@ extends:
             repository: '$(imageRepository)'
             dockerfile: '$(dockerfilePath)'
             buildContext: '$(buildContext)'
-            arguments: '--build-arg APP_VERSION=$(candidateTag)'
+            arguments: '--build-arg APP_VERSION=$(candidateTag) --build-arg APP_IMAGE_TAG=$(candidateTag)'
             tags: |
               $(candidateTag)
               dev

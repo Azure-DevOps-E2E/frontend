@@ -4,6 +4,7 @@ import type {
   ListResponse,
   Order,
   Product,
+  ServiceVersionsResponse,
   User,
 } from './types'
 
@@ -58,7 +59,11 @@ export const api = {
   },
 
   async orders(): Promise<Order[]> {
-    return (await request<ListResponse<Order>>('/orders')).items
+    return (await request<ListResponse<Order>>('/orders' )).items
+  },
+
+  serviceVersions(): Promise<ServiceVersionsResponse> {
+    return request<ServiceVersionsResponse>('/system/versions' )
   },
 
   createOrder(payload: CreateOrderPayload): Promise<Order> {

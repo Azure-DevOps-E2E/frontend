@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ApiClientError, api } from './api'
-import type { Order, Product, User } from './types'
+import type { Order, Product, ServiceVersionsResponse, User } from './types'
 
 type LoadState = 'loading' | 'ready' | 'error'
 
@@ -32,12 +32,28 @@ function App() {
   const [users, setUsers] = useState<User[]>([])
   const [products, setProducts] = useState<Product[]>([])
   const [orders, setOrders] = useState<Order[]>([])
+  const [serviceVersions, setServiceVersions] = useState<ServiceVersionsResponse | null>(null)
   const [selectedUserId, setSelectedUserId] = useState('')
   const [quantities, setQuantities] = useState<Record<string, number>>({})
   const [loadState, setLoadState] = useState<LoadState>('loading')
+  const [versionsState, setVersionsState] = useState<LoadState>('loading')
+  const [versionsError, setVersionsError] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState('')
+
+  const loadServiceVersions = useCallback(async () => {
+    setVersionsState('loading')
+    setVersionsError('')
+    try {
+      const nextVersions = await api.serviceVersions()
+      setServiceVersions(nextVersions)
+      setVersionsState('ready')
+    } catch (versionError) {
+      setVersionsState('error')
+      setVersionsError(toErrorMessage(versionError))
+    }
+  }, [])
 
   const loadStore = useCallback(async () => {
     setLoadState('loading')
@@ -53,6 +69,7 @@ function App() {
       setOrders(nextOrders)
       setSelectedUserId((current) => current || nextUsers[0]?.id || '')
       setLoadState('ready')
+      void loadServiceVersions()
     } catch (loadError) {
       setLoadState('error')
       setError(toErrorMessage(loadError))
@@ -122,7 +139,11 @@ function App() {
         </a>
         <div className="service-status" aria-label="System status">
           <span className={loadState === 'ready' ? 'status-dot online' : 'status-dot'} />
-          {loadState === 'ready' ? '4 services online' : 'Đang kết nối'}
+          {loadState === 'ready'
+            ? serviceVersions
+              ? `${serviceVersions.services.length + 1} services tracked`
+              : 'Đang tải versions'
+            : 'Đang kết nối'}
         </div>
       </header>
 
@@ -309,11 +330,76 @@ function App() {
           </div>
         ) : null}
 
+        <section className="versions-section" aria-labelledby="versions-title">
+          <div className="section-heading versions-heading">
+            <div>
+              <p className="section-index">03 / SYSTEM</p>
+              <h2 id="versions-title">Version và image tag của các service</h2>
+            </div>
+            <span>
+              {serviceVersions
+                ? `${serviceVersions.services.length + 1} services tracked`
+                : 'Gateway snapshot'}
+            </span>
+          </div>
+
+          {versionsState === 'loading' ? (
+            <div className="versions-placeholder">
+              <div className="versions-summary skeleton" />
+              <div className="versions-grid">
+                {[0, 1, 2, 3, 4].map((item) => (
+                  <div className="version-card skeleton version-card-skeleton" key={item} />
+                ))}
+              </div>
+            </div>
+          ) : versionsState === 'error' ? (
+            <div className="versions-error" role="status">
+              <strong>Không tải được version snapshot.</strong>
+              <p>{versionsError}</p>
+              <button type="button" onClick={() => void loadServiceVersions()}>
+                Thử lại
+              </button>
+            </div>
+          ) : serviceVersions ? (
+            <>
+              <article className="versions-summary">
+                <div className="version-meta-row">
+                  <span className="version-kicker">API GATEWAY</span>
+                  <span className={`version-status ${serviceVersions.status.toLowerCase()}`}>
+                    {serviceVersions.status}
+                  </span>
+                </div>
+                <strong>{serviceVersions.version}</strong>
+                <p>
+                  Image tag <code>{serviceVersions.imageTag}</code> · updated {formatDate(serviceVersions.generatedAt)}
+                </p>
+              </article>
+
+              <div className="versions-grid">
+                {serviceVersions.services.map((service) => (
+                  <article className="version-card" key={service.service}>
+                    <div className="version-meta-row">
+                      <span className="version-kicker">{service.service}</span>
+                      <span className={`version-status ${service.status.toLowerCase()}`}>
+                        {service.status}
+                      </span>
+                    </div>
+                    <strong>{service.version}</strong>
+                    <p>
+                      Image tag <code>{service.imageTag}</code>
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </>
+          ) : null}
+        </section>
+
         {loadState === 'ready' && (
           <section className="orders-section" aria-labelledby="orders-title">
             <div className="section-heading orders-heading">
               <div>
-                <p className="section-index">03 / HISTORY</p>
+                <p className="section-index">04 / HISTORY</p>
                 <h2 id="orders-title">Đơn gần đây</h2>
               </div>
               <span>{orders.length} đơn đã tạo</span>

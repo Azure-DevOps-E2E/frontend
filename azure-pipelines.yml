@@ -31,7 +31,7 @@ variables:
   value: '$(System.DefaultWorkingDirectory)/coverage/lcov.info'
 
 pool:
-  name: azure-agent
+  name: 'Azure Pipelines'
 
 extends:
   template: pipelines/templates/pipeline-contract.yml@templates
@@ -67,7 +67,9 @@ extends:
           parameters:
             cacheKey: '$(serviceName)-node$(nodeVersion)'
             testResultsFile: reports/test-results.xml
-            coverageFile: coverage/lcov.info
+            coverageDirectory: coverage
+            validationCommand: 'npm run typecheck'
+            buildCommand: 'npm run build'
             condition: and(succeeded(), eq(variables['detect.skipHeavyCI'], 'false'))
 
         - task: PublishTestResults@2
@@ -80,7 +82,7 @@ extends:
             mergeTestResults: true
             failTaskOnFailedTests: true
             failTaskOnFailureToPublishResults: true
-            failTaskOnMissingResultsFile: true
+            failTaskOnMissingResultsFile: false
             testRunTitle: '$(serviceName) tests'
 
         - task: UseDotNet@2
@@ -92,7 +94,7 @@ extends:
 
         - task: PublishCodeCoverageResults@2
           displayName: 'Publish coverage report'
-          condition: and(succeededOrFailed(), eq(variables['detect.skipHeavyCI'], 'false'))
+          condition: and(succeededOrFailed(), eq(variables['detect.skipHeavyCI'], 'false'), eq(variables['coverageSummaryFileExists'], 'true'))
           inputs:
             summaryFileLocation: '$(coverageSummaryFile)'
             pathToSources: '$(Build.SourcesDirectory)'
@@ -101,6 +103,7 @@ extends:
         - template: steps/qodana-scan.yml@templates
           parameters:
             linter: 'jetbrains/qodana-js'
+            maxMemory: '384m'
             condition: and(succeeded(), eq(variables['detect.skipHeavyCI'], 'false'))
 
         - template: steps/qodana-quality-gate.yml@templates

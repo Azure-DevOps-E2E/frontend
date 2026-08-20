@@ -879,3 +879,134 @@ footer {
     transition-duration: 0.01ms !important;
   }
 }
+
+.versions-section {
+  padding: 70px 0 90px;
+  border-top: 1px solid var(--line);
+}
+
+.versions-heading {
+  margin-bottom: 25px;
+}
+
+.versions-summary {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding: 23px;
+  border: 1px solid var(--line);
+  background: linear-gradient(135deg, #f9f7f1 0%, #efebe2 100%);
+}
+
+.versions-summary strong,
+.version-card strong {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.versions-summary p,
+.version-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.versions-summary code,
+.version-card code {
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgb(32 33 29 / 7%);
+  color: var(--ink);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+}
+
+.versions-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.version-card {
+  display: grid;
+  gap: 10px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.version-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.version-kicker {
+  color: #6e6f67;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.version-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 8px;
+  border-radius: 999px;
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.version-status.up {
+  background: #e7f2c8;
+  color: #52730e;
+}
+
+.version-status.degraded {
+  background: #fff2cc;
+  color: #8f6400;
+}
+
+.version-status.down {
+  background: #ffd6d1;
+  color: #a03a2f;
+}
+
+.versions-placeholder {
+  display: grid;
+  gap: 22px;
+}
+
+.version-card-skeleton {
+  min-height: 132px;
+  border: 1px solid rgb(218 214 206 / 82%);
+}
+
+.versions-error {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+  border: 1px solid #d7a69f;
+  background: #fff0ed;
+  color: #762e25;
+}
+
+.versions-error button {
+  justify-self: start;
+  padding: 9px 14px;
+  border: 0;
+  background: var(--dark);
+  color: white;
+}
+
+@media (max-width: 1050px) {
+  .versions-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -21,6 +21,40 @@ const products = {
   ],
 }
 
+const serviceVersions = {
+  service: 'api-gateway',
+  status: 'UP',
+  version: 'v1.0.152',
+  imageTag: 'registry.example.com/api-gateway:v1.0.152',
+  generatedAt: '2026-08-20T08:30:00Z',
+  services: [
+    {
+      service: 'frontend',
+      status: 'UP',
+      version: 'v1.4.9',
+      imageTag: 'registry.example.com/frontend:sha-6949d03c',
+    },
+    {
+      service: 'user-service',
+      status: 'UP',
+      version: 'v2.1.3',
+      imageTag: 'registry.example.com/user-service:sha-6949d03c',
+    },
+    {
+      service: 'catalog-service',
+      status: 'UP',
+      version: 'v2.0.7',
+      imageTag: 'registry.example.com/catalog-service:sha-6949d03c',
+    },
+    {
+      service: 'order-service',
+      status: 'UP',
+      version: 'v1.9.1',
+      imageTag: 'registry.example.com/order-service:sha-6949d03c',
+    },
+  ],
+}
+
 const createdOrder = {
   id: 'ord-001',
   userId: 'usr-001',
@@ -56,17 +90,22 @@ describe('App', () => {
     vi.unstubAllGlobals()
   })
 
-  it('loads the storefront and creates an order', async () => {
+  it('loads the storefront, shows service versions and creates an order', async () => {
     const fetchMock = vi.mocked(fetch)
     fetchMock
       .mockImplementationOnce(() => jsonResponse(users))
       .mockImplementationOnce(() => jsonResponse(products))
       .mockImplementationOnce(() => jsonResponse({ items: [] }))
+      .mockImplementationOnce(() => jsonResponse(serviceVersions))
       .mockImplementationOnce(() => jsonResponse(createdOrder, 201))
 
     render(<App />)
 
     expect(await screen.findByText('Mechanical Keyboard')).toBeInTheDocument()
+    expect(await screen.findByText('Version và image tag của các service')).toBeInTheDocument()
+    expect(await screen.findByText('v1.0.152')).toBeInTheDocument()
+    expect(screen.getByText('registry.example.com/frontend:sha-6949d03c')).toBeInTheDocument()
+
     fireEvent.click(screen.getByRole('button', { name: 'Thêm Mechanical Keyboard' }))
     fireEvent.click(screen.getByRole('button', { name: 'Tạo đơn hàng' }))
 

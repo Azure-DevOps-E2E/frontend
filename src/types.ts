@@ -50,3 +50,21 @@ export type ApiErrorPayload = {
     requestId?: string
   }
 }
+
+export type ServiceVersionStatus = 'UP' | 'DEGRADED' | 'DOWN'
+
+export type ServiceVersion = {
+  service: string
+  status: ServiceVersionStatus
+  version: string
+  imageTag: string
+}
+
+export type ServiceVersionsResponse = {
+  service: string
+  status: ServiceVersionStatus
+  version: string
+  imageTag: string
+  generatedAt: string
+  services: ServiceVersion[]
+}

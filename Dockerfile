@@ -10,8 +10,9 @@ RUN npm run test:run \
 
 FROM nginx:1.30.4-alpine3.24
 
-ENV APP_VERSION=1.0.0
-ENV NGINX_ENVSUBST_FILTER=APP_VERSION
+ARG APP_VERSION=1.0.0
+ENV APP_VERSION=${APP_VERSION} \
+    NGINX_ENVSUBST_FILTER=APP_VERSION
 
 COPY nginx.conf /etc/nginx/templates/default.conf.template
 COPY --from=build /app/dist /usr/share/nginx/html
